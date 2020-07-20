@@ -18,15 +18,15 @@ local Config = {} -- Do not edit this line
 Config.RefreshTime = 30
 -- The URL of your PasteBin
 -- Should look like: https://pastebin.com/eyba7r
-Config.PasteBinURL = "https://pastebin.com/rnzkxbEa"
+Config.PasteBinURL = ""
 -- API Dev Key for PasteBin.com
 -- "Your Unique Developer API Key" from https://pastebin.com/api
 -- Should look like: d460f1e7a0ba23662fb8d56g77g7147y
-Config.APIDevKey = "bd46018a7b09a2626fb8da57771de478"
+Config.APIDevKey = ""
 -- API User Key for PasteBin.com
 -- Use the API Dev Key, and your username and password here: https://pastebin.com/api/api_user_key.html
 -- Should look like: b4ca9es8cadae90fge7ghfy8361c9f4m
-Config.APIUserKey = "9e3dbd9365bf77e42b9f500a06e45cd4"
+Config.APIUserKey = ""
 
 --
 --		Nothing past this point needs to be edited, all the settings for the resource are found ABOVE this line.
