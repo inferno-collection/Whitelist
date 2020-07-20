@@ -1,4 +1,4 @@
--- Inferno Collection Whitelist Version 1.2 Beta
+-- Inferno Collection Whitelist Version 1.21 Beta
 --
 -- Copyright (c) 2019, Christopher M, Inferno Collection. All rights reserved.
 --
@@ -17,16 +17,16 @@ local Config = {} -- Do not edit this line
 -- Time in minutes between whitelist refresh intervals
 Config.RefreshTime = 30
 -- The URL of your PasteBin
--- Should looke like: https://pastebin.com/eyba7r
-Config.PasteBinURL = ""
+-- Should look like: https://pastebin.com/eyba7r
+Config.PasteBinURL = "https://pastebin.com/rnzkxbEa"
 -- API Dev Key for PasteBin.com
 -- "Your Unique Developer API Key" from https://pastebin.com/api
 -- Should look like: d460f1e7a0ba23662fb8d56g77g7147y
-Config.APIDevKey = ""
+Config.APIDevKey = "bd46018a7b09a2626fb8da57771de478"
 -- API User Key for PasteBin.com
 -- Use the API Dev Key, and your username and password here: https://pastebin.com/api/api_user_key.html
 -- Should look like: b4ca9es8cadae90fge7ghfy8361c9f4m
-Config.APIUserKey = ""
+Config.APIUserKey = "9e3dbd9365bf77e42b9f500a06e45cd4"
 
 --
 --		Nothing past this point needs to be edited, all the settings for the resource are found ABOVE this line.
@@ -39,21 +39,33 @@ Config.APIPasteKey = Config.PasteBinURL:match("([^/]+)$")
 
 AddEventHandler("onResourceStart", function(Resource)
     if (GetCurrentResourceName() == Resource) then
+        if Config.PasteBinURL == "" or Config.APIDevKey == "" or APIUserKey == "" then
+            print("===================================================================")
+            print("=========================Inferno-Whitelist=========================")
+            print("==========================CRITICAL ERROR===========================")
+            print("The Inferno Whitelist resource config cannot be blank! Please make ")
+            print("sure all values are filled. See this wiki page for more info: https")
+            print("://github.com/inferno-collection/Whitelist/wiki/Installation-Guide")
+            print("===================================================================")
+
+            return
+        end
+
         Citizen.CreateThread(function()
             while true do
                 PerformHttpRequest("https://pastebin.com/api/api_raw.php", function (Code, Body)
-                    -- If not HTTP Code 200 OK
                     if Code ~= 200 then
                         print("===================================================================")
+                        print("=========================Inferno-Whitelist=========================")
                         print("==========================CRITICAL ERROR===========================")
                         print("Inferno-Whitelist was NOT able to load the whitelist file: no playe")
                         print("rs will be allowed to join the server until this issue is fixed.")
                         print("")
                         print("Error Code Received: " .. Code)
                         print("===================================================================")
-                    -- If HTTP Code 200 OK received
                     else
                         Whitelist = json.decode(Body)
+
                         print("===================================================================")
                         print("=========================Inferno-Whitelist=========================")
                         print("The whitelist file has been loaded successfully! Players that join ")
@@ -66,17 +78,17 @@ AddEventHandler("onResourceStart", function(Resource)
                 Citizen.Wait(Config.RefreshTime * 60000)
                 print("===================================================================")
                 print("=========================Inferno-Whitelist=========================")
-                print("Collecting lastest version of whitelist... Please stand by.")
+                print("Collecting latest version of whitelist... Please stand by.")
                 print("===================================================================")
             end
         end)
     end
 end)
 
-AddEventHandler("playerConnecting", function(Name, Kick, Deferrals)
+AddEventHandler("playerConnecting", function(Name, _, Deferrals)
     -- Defer the client while we start the checking process
     Deferrals.defer()
-    -- The cline only sees this message if they are deferred for more than a few seconds
+    -- The client only sees this message if they are deferred for more than a few seconds
     Deferrals.update("Welcome " .. Name .. ", we are checking your whitelist status, please stand by.")
 
     local IDs = GetPlayerIdentifiers(source)
@@ -85,11 +97,13 @@ AddEventHandler("playerConnecting", function(Name, Kick, Deferrals)
         local Whitelisted = false
 
         -- Fast-track method
-        -- As long as identifers are in lowercase in the `whitelist.json` file, this method will work, and is much faster than the other method.
+        -- As long as identifiers are in lowercase in the `whitelist.json` file, this method will work, and is much faster than the other method.
         for _, ID in pairs(IDs) do
             if Whitelist[ID] then
                 Whitelisted = true
+                
                 print(Name .. " was approved with ID '" .. tostring(ID) .. "' using the Fast-Track method.")
+
                 break
             end
         end
@@ -101,17 +115,22 @@ AddEventHandler("playerConnecting", function(Name, Kick, Deferrals)
                 for _, ID in pairs(IDs) do
                     if ID:lower() == Entry:lower() then
                         Whitelisted = true
+
                         print("===================================================================")
+                        print("=========================Inferno-Whitelist=========================")
                         print("=============================ATTENTION=============================")
                         print(Name .. " was approved with ID '" .. tostring(ID) .. "' using the")
                         print("Loop method, that's bad! Please check their whitelist entry/s, and ")
                         print("ensure it is in all lowercase, so they can join faster next time!")
                         print("===================================================================")
-                        break
+
+                        goto EndLoopMethod
                     end
                 end
             end
         end
+
+        ::EndLoopMethod::
 
         if Whitelisted then
             -- Allow client access to server
@@ -123,7 +142,9 @@ AddEventHandler("playerConnecting", function(Name, Kick, Deferrals)
 
     else
         Deferrals.done("Sorry " .. Name .. ", the server is experiencing some issues at the moment, could you please inform the staff? Thank you!")
+
         print("===================================================================")
+        print("=========================Inferno-Whitelist=========================")
         print("==========================CRITICAL ERROR===========================")
         print("Inferno-Whitelist was NOT able to load the whitelist file: no playe")
         print("rs will be allowed to join the server until this issue is fixed.")
