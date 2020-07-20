@@ -101,7 +101,7 @@ AddEventHandler("playerConnecting", function(Name, _, Deferrals)
         for _, ID in pairs(IDs) do
             if Whitelist[ID] then
                 Whitelisted = true
-                
+
                 print(Name .. " was approved with ID '" .. tostring(ID) .. "' using the Fast-Track method.")
 
                 break
