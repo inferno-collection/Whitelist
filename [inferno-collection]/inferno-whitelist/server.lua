@@ -24,7 +24,7 @@ Config.PasteBinURL = ""
 -- Should look like: d460f1e7a0ba23662fb8d56g77g7147y
 Config.APIDevKey = ""
 -- API User Key for PasteBin.com
--- Use the API Dev Key, and your username and password here: https://pastebin.com/api/api_user_key.html
+-- See here for how to create a key: https://pastebin.com/doc_api#8
 -- Should look like: b4ca9es8cadae90fge7ghfy8361c9f4m
 Config.APIUserKey = ""
 
